@@ -168,7 +168,7 @@ func (e *Engine) Run() *EngineResult {
 					}
 				}
 				e.confirmCandidate()
-			case termbox.KeyCtrlC:
+			case termbox.KeyCtrlC, termbox.KeyCtrlD:
 				return &EngineResult{}
 			default:
 			}
