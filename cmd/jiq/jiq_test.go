@@ -1,52 +1,42 @@
 package main
 
 import (
-	"fmt"
-	"os"
 	"testing"
 
-	"github.com/fiatjaf/jiq"
 	"github.com/stretchr/testify/assert"
 )
 
-var called int = 0
+const (
+	Failure = 2
+	Success = 0
+)
 
-func TestMain(m *testing.M) {
-	called = 0
-	code := m.Run()
-	defer os.Exit(code)
+type mockRunner struct {
+	returnSuccess bool
 }
 
-func TestjiqRun(t *testing.T) {
-	var assert = assert.New(t)
-
-	e := &jiq.Engine{}
-	result := run(e, false)
-	assert.Zero(result)
-	assert.Equal(2, called)
-
-	result = run(e, true)
-	assert.Equal(1, called)
-
-	result = run(e, false)
-	assert.Zero(result)
-}
-
-func TestjiqRunWithError(t *testing.T) {
-	called = 0
-	var assert = assert.New(t)
-	e := &jiq.Engine{}
-	result := run(e, false)
-	assert.Equal(2, result)
-	assert.Equal(0, called)
-}
-
-type EngineMock struct{ err error }
-
-func (e *EngineMock) Run() *jiq.EngineResult {
-	return &jiq.EngineResult{
-		Err:     fmt.Errorf(""),
-		Qs:      ".querystring",
-		Content: `{"test": "result"}`,
+func (r mockRunner) run() int {
+	if r.returnSuccess {
+		return Success
+	} else {
+		return Failure
 	}
+}
+
+// TODO: Test parsing args by breaking it out of main
+// Until then, just run the mock
+func TestJiqRun(t *testing.T) {
+	var assert = assert.New(t)
+
+	m := mockRunner{returnSuccess: true}
+	result := doRun(m)
+	assert.Equal(Success, result)
+}
+
+func TestJiqRunWithError(t *testing.T) {
+	var assert = assert.New(t)
+
+	m := mockRunner{returnSuccess: false}
+	result := doRun(m)
+	assert.Equal(Failure, result)
 }
