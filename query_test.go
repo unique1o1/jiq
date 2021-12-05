@@ -69,6 +69,10 @@ func TestQueryDelete(t *testing.T) {
 	assert.Equal([]rune("llo.world"), q.Delete(0))
 	assert.Equal([]rune("ll.world"), q.Delete(2))
 	assert.Equal([]rune("llworld"), q.Delete(2))
+
+	q = NewQuery([]rune(""))
+	assert.Equal([]rune(""), q.Delete(0))
+
 }
 
 func TestGetKeywords(t *testing.T) {

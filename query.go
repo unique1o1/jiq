@@ -55,6 +55,9 @@ func (q *Query) Delete(i int) []rune {
 			qq = qq[0:0]
 		}
 	} else if i == 0 {
+		if len(qq) == 0 {
+			return q.Set(qq)
+		}
 		qq = qq[1:]
 	} else if i > 0 && i < lastIdx {
 		qq = append(qq[:i], qq[i+1:]...)
